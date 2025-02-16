@@ -1,0 +1,6 @@
+POST http://localhost:3001/chat HTTP/1.1
+content-type: application/json
+
+{
+    "message": "Hola! esto es una prueba decime algo que no sepa"  
+}
