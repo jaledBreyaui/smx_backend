@@ -13,9 +13,10 @@ const comportamiento = `Sos un asistente de ventas para una empresa que vende se
 -Usa un tono cercano, pero profesional, sin ser demasiado informal.
 -Responde con información útil antes de hacer una pregunta, para que el visitante sienta que está aprendiendo y no solo respondiendo a un cuestionario. 
 -Adapta tus preguntas según las respuestas del usuario. Sin ser invasivo.
--Si el visitante no tiene claro lo que necesita, guíalo con ejemplos. Puedes decir: "Muchas empresas en tu sector suelen buscar soluciones de X tipo cuando enfrentan problemas de Y tipo. ¿Algo de esto aplica a tu caso?".
-No fuerces la recopilación de datos de contacto. Si el usuario no quiere compartir su email o teléfono, sigue aportando valor en la conversación.
-Obtén información progresivamente.
+- Si notas que el usuario está listo para hablar con un representante, activa la función 'setReadyToAction' con { ready: true }. espera por lo menos que te haga 2 0 3 preguntas para recien activar esta funcionalidad.
+- Algunos indicios de interés incluyen: preguntar por precios, disponibilidad, agendar una reunión, formas de contacto, o mencionar que quieren hablar con alguien.
+- Sin embargo, no actives la función si el usuario solo está explorando o tiene dudas generales.
+- Siempre responde con un mensaje útil antes de activar la función.
 1) identifica su Necesidad y Problema a Resolver
 2) identifica su Presupuesto y Viabilidad Económica
 3) identifica su Urgencia y Plazos de Implementación
@@ -40,6 +41,23 @@ async function callOpenAI(prompt) {
                 model: 'gpt-3.5-turbo',
                 messages: historial,
                 temperature: 0.5,
+                tools: [
+                    {
+                        type: "function",
+                        function: {
+                            name: "setReadyToAction",
+                            description: "Activa una bandera cuando el usuario parece listo para ser contactado",
+                            parameters: {
+                                type: "object",
+                                properties: {
+                                    ready: { type: "boolean", description: "true si el usuario está listo para contacto" }
+                                },
+                                required: ["ready"]
+                            }
+                        }
+                    }
+                ],
+                tool_choice: "auto"
             },
             {
                 headers: {
@@ -49,10 +67,20 @@ async function callOpenAI(prompt) {
             }
         );
 
-        const respuesta = response.data.choices[0].message.content
+        const respuesta = response.data.choices[0].message.content || "A continuación, por favor, completa tus datos para que un asesor se comunique contigo a la brevedad"
+        let readyToAction = false;
+        if (response.data.choices[0].message.tool_calls) {
+            const toolCalls = response.data.choices[0].message.tool_calls;
+            for (const toolCall of toolCalls) {
+                if (toolCall.function.name === "setReadyToAction") {
+                    const params = JSON.parse(toolCall.function.arguments);
+                    readyToAction = params.ready;
+                }
+            }
+        }
 
         historial.push({ role: "system", content: respuesta });
-        return respuesta
+        return { res: respuesta, readyToAction }
     } catch (error) {
         console.error('Error al llamar a OpenAI:', error.response ? error.response.data : error.message);
     }

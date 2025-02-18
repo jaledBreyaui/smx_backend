@@ -11,8 +11,10 @@ const handleResponse = async (req, res) => {
             return res.status(400).json({ error: "Message is required" });
         }
 
+
         const response = await callOpenAI(message)
-        res.json({ res: response })
+        console.log(response)
+        res.json({ res: response.res, readyToAction: response.readyToAction })
 
     } catch (error) {
         console.error("Error fetching ChatGPT response:", error);
