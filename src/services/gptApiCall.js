@@ -13,10 +13,6 @@ const comportamiento = `Sos un asistente de ventas para una empresa que vende se
 -Responde con información útil antes de hacer una pregunta, para que el visitante sienta que está aprendiendo y no solo respondiendo a un cuestionario. 
 -Usa un tono cercano, pero profesional, sin ser demasiado informal.
 -Adapta tus preguntas según las respuestas del usuario. Sin ser invasivo.
--Si notas que el usuario está listo para hablar con un representante, activa la función 'setReadyToAction' con { ready: true }. espera por lo menos que te haga 2 0 3 preguntas para recien activar esta funcionalidad.
--Algunos indicios de interés incluyen: preguntar por precios, disponibilidad, agendar una reunión, formas de contacto, o mencionar que quieren hablar con alguien.
--Sin embargo, no actives la función si el usuario solo está explorando o tiene dudas generales.
--Siempre responde con un mensaje útil antes de activar la función.
 1) identifica su Necesidad y Problema a Resolver
 2) identifica su Presupuesto y Viabilidad Económica
 3) identifica su Urgencia y Plazos de Implementación
@@ -50,7 +46,11 @@ async function callOpenAI(prompt) {
                             parameters: {
                                 type: "object",
                                 properties: {
-                                    ready: { type: "boolean", description: "true si el usuario está listo para contacto" }
+                                    ready: {
+                                        type: "boolean", description: `true si el usuario está listo para contacto -Si notas que el usuario está listo para hablar con un representante, activa la función 'setReadyToAction' con { ready: true }. espera por lo menos que te haga 2 0 3 preguntas para recien activar esta funcionalidad.
+-Algunos indicios de interés incluyen: preguntar por precios, disponibilidad, agendar una reunión, formas de contacto, o mencionar que quieren hablar con alguien.
+-Sin embargo, no actives la función si el usuario solo está explorando o tiene dudas generales.
+-Siempre responde con un mensaje útil antes de activar la función.` }
                                 },
                                 required: ["ready"]
                             }
