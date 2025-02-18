@@ -13,7 +13,7 @@ const handleResponse = async (req, res) => {
 
 
         const response = await callOpenAI(message)
-        console.log(response)
+
         res.json({ res: response.res, readyToAction: response.readyToAction })
 
     } catch (error) {
