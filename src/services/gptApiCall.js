@@ -20,6 +20,12 @@ const contexto = JSON.stringify(jsonData);
 let historial = [
     { role: "system", content: `Aca esta la informacion de la empresa: \n ${contexto}` },
     { role: "system", content: comportamiento },
+    {
+        role: "system", content: `tenes una funcion llamada setReadyToAction
+        -Si notas que el usuario está listo para hablar con un representante, activa la función 'setReadyToAction' con { ready: true }.
+        -Algunos indicios de interés incluyen: preguntar por precios, disponibilidad, agendar una reunión, formas de contacto, o mencionar que quieren hablar con alguien.
+        -Sin embargo, no actives la función si el usuario solo está explorando o tiene dudas generales.
+        -Siempre responde con un mensaje útil antes de activar la función.`}
 ]
 
 async function callOpenAI(prompt) {
@@ -41,11 +47,8 @@ async function callOpenAI(prompt) {
                                 type: "object",
                                 properties: {
                                     ready: {
-                                        type: "boolean", description: `true si el usuario está listo para contacto. preguntale para confirmar "Puedo hacer que un representante se comunique contigo si asi lo deseas"
-                                    -Si notas que el usuario está listo para hablar con un representante, activa la función 'setReadyToAction' con { ready: true }.
-                                    -Algunos indicios de interés incluyen: preguntar por precios, disponibilidad, agendar una reunión, formas de contacto, o mencionar que quieren hablar con alguien.
-                                    -Sin embargo, no actives la función si el usuario solo está explorando o tiene dudas generales.
-                                    -Siempre responde con un mensaje útil antes de activar la función.` }
+                                        type: "boolean", description: `true si el usuario está listo para contacto.`
+                                    }
                                 },
                                 required: ["ready"]
                             }

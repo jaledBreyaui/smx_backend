@@ -1,6 +1,54 @@
-POST https://smx-backend.onrender.com/chat HTTP/1.1
-content-type: application/json
+# POST http://localhost:3001/chat HTTP/1.1
+# content-type: application/json
+
+# {
+#     "message": "Hola! esto es una prueba decime algo que no sepa"  
+# }
+
+POST  https://amasys.com.ar/recibir.php HTTP/1.1
+Content-Type: application/application/x-www-form-urlencoded
 
 {
-    "message": "Hola! esto es una prueba decime algo que no sepa"  
+    "first_name" : "Jaled",
+    "last_name": "Breyaui",
+    "email": "jaled@jaled.com",
+    "phone": "15342912939",
+    "preguntas_respuestas": ["1", "HOLA", "HOla"]
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
